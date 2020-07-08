@@ -37,5 +37,13 @@ int main(int argc, char ** argv)
     {
         cout << RPIData::get_temp() << '\n';
     }
+
+    if (cfg.save_freq)
+    {
+        cout << RPIData::get_freq(0) << '\n'; // Current
+        cout << RPIData::get_freq(1) << '\n'; // Minimum
+        cout << RPIData::get_freq(2) << '\n'; // Maximum
+    }
+
     return 0;
 }

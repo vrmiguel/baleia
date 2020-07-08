@@ -36,13 +36,37 @@ std::string RPIData::get_temp()
     in.open("/sys/class/thermal/thermal_zone0/temp");
     if (!in)
     {
-        fprintf(stderr, "In librpidata::get_temp: failed to open file.");
+        fprintf(stderr, "In librpidata::get_temp: failed to open 'thermal_zone0/temp'");
         exit(1);
     }
-    float freq;
-    in >> freq;
-    fprintf(stderr, "Read: %f\n", freq);
-    char buff[100];
-    snprintf(buff, sizeof(buff), "%.2f °C", (float) freq/1000);
+    float heat;
+    in >> heat;
+    char buff[20];
+    snprintf(buff, sizeof(buff), "%.2f °C", (float) heat/1000);
     return std::string(buff);
+}
+
+std::string RPIData::get_freq(unsigned char type)
+{
+    ifstream in;
+    if (type == 0)       //! Type 0 --- Current frequency
+        in.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+    else if (type == 1)  //! Type 1 --- Minimum frequency
+        in.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
+    else if (type == 2)  //! Type 2 --- Maximum frequency
+        in.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
+    else
+    {
+        fprintf(stderr, "In librpidata::get_freq: type given (\"%u\") is invalid.", type);
+    }
+
+    if (!in)
+    {
+        fprintf(stderr, "In librpidata::get_freq: failed to open file. (type = %u)\n", type);
+        exit(1);
+    }
+    unsigned int freq;
+    in >> freq;
+    freq = freq/1000;
+    return std::to_string(freq) + " MHz";
 }

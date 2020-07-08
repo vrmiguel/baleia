@@ -37,16 +37,10 @@ namespace RPIData
     std::string get_temp();
 
     //!
-    //! \brief get_minmax_freq
-    //! \return
-    //!
-    std::string get_minmax_freq();
-
-    //!
     //! \brief get_freq
     //! \return
     //!
-    std::string get_freq();
+    std::string get_freq(unsigned char);
 }
 
 #endif // LIBRPIDATA_H
