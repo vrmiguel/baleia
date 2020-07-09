@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
         if(cfg.save_version)
         {
             fprintf(out_file, "[file-info]\nbaleia-ver=\"%s\"\n", __RPIDATA_VER);
-            fprintf(out_file, "filename=\"%s\"", buffer);
+            fprintf(out_file, "filename=\"%s\"\n", buffer);
         }
         if(cfg.save_user_info)
         {
@@ -86,6 +86,19 @@ int main(int argc, char ** argv)
     }
 
     fclose(out_file);
+
+    FILE * in_file = fopen(buffer, "r");
+    char buf[1024];
+    size_t nread;
+    while ((nread = fread(buf, 1, sizeof buf, in_file)) > 0)
+    {
+        fwrite(buf, 1, nread, stdout);
+    }
+    if (ferror(in_file))
+    {
+        //
+    }
+    fclose(in_file);
 
     return 0;
 }
