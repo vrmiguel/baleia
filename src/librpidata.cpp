@@ -24,10 +24,10 @@
  */
 
 #include "includes/librpidata.h"
-#include <fstream>
-//#include <cstdio>
-#include <memory>   // unique_ptr
-//#include <regex>    // std::regex, regex::replace
+#include <fstream>   // ifstream
+#include <memory>    // unique_ptr
+#include <unistd.h>  // gethostname
+#include <pwd.h>     // struct passwd, getpwuid_r
 
 using std::string;
 using std::ifstream;
@@ -121,3 +121,18 @@ std::string RPIData::get_distro()
     string_replace(res, "\"", "");
     return res;
 }
+
+std::string RPIData::get_username()
+{
+
+    uid_t uid = geteuid();             // Gets the effective ID of the user that started miniSHELL
+    struct passwd pwent;
+    struct passwd *pwent_ptr;
+    char buffer[1024];
+
+        // Looks for the UDI on the password databank and saves the result on pwent
+    getpwuid_r(uid, &pwent, buffer, sizeof buffer, &pwent_ptr);
+    return pwent.pw_name;   // Saves username
+}
+
+

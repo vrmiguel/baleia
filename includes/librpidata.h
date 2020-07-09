@@ -49,6 +49,7 @@ namespace RPIData
     std::string get_gov();
 
     std::string get_distro();
+    std::string get_username();
 }
 
 #endif // LIBRPIDATA_H

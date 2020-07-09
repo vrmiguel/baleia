@@ -49,6 +49,6 @@ int main(int argc, char ** argv)
 
     cout << RPIData::get_gov() << '\n';
     cout << RPIData::get_distro() << '\n';
-
+    cout << RPIData::get_username() << '\n';
     return 0;
 }
