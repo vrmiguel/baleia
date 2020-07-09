@@ -25,10 +25,27 @@
 
 #include "includes/librpidata.h"
 #include <fstream>
-#include <cstdio>
+//#include <cstdio>
+#include <memory>   // unique_ptr
+#include <regex>    // std::regex, regex::replace
 
 using std::string;
 using std::ifstream;
+
+static std::string shell_cmd(const char * cmd) {
+    char buffer[128];
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe)
+    {
+        return "RPIData::shell_cmd failed.";
+    }
+    while (fgets(buffer, 128, pipe.get()) != nullptr)
+    {
+        result += buffer;
+    }
+    return result;
+}
 
 std::string RPIData::get_temp()
 {
@@ -37,7 +54,7 @@ std::string RPIData::get_temp()
     if (!in)
     {
         fprintf(stderr, "In librpidata::get_temp: failed to open 'thermal_zone0/temp'");
-        exit(1);
+        return "get_temp failed";
     }
     float heat;
     in >> heat;
@@ -58,15 +75,38 @@ std::string RPIData::get_freq(unsigned char type)
     else
     {
         fprintf(stderr, "In librpidata::get_freq: type given (\"%u\") is invalid.", type);
+        return "get_freq failed";
     }
 
     if (!in)
     {
         fprintf(stderr, "In librpidata::get_freq: failed to open file. (type = %u)\n", type);
-        exit(1);
+        return "get_freq failed";
     }
     unsigned int freq;
     in >> freq;
     freq = freq/1000;
     return std::to_string(freq) + " MHz";
+}
+
+std::string RPIData::get_gov()
+{
+    ifstream in;
+    in.open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+    if (!in)
+    {
+        fprintf(stderr, "In librpidata::get_gov: failed to open cpufreq/scaling_governor.");
+        return "get_gov failed";
+    }
+    std::string res;
+    in >> res;
+    return res;
+}
+
+std::string RPIData::get_distro()
+{
+    std::string res = shell_cmd("cat /etc/os-release | grep PRETTY_NAME=");
+    res = std::regex_replace(res, std::regex("PRETTY_NAME="), "");
+    res = std::regex_replace(res, std::regex("\""), "");
+    return res;
 }

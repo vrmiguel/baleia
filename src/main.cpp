@@ -28,6 +28,8 @@
 #include "includes/librpidata.h"
 #include <iostream>
 
+#include <memory>
+
 using std::cout;
 
 int main(int argc, char ** argv)
@@ -40,10 +42,13 @@ int main(int argc, char ** argv)
 
     if (cfg.save_freq)
     {
-        cout << RPIData::get_freq(0) << '\n'; // Current
-        cout << RPIData::get_freq(1) << '\n'; // Minimum
-        cout << RPIData::get_freq(2) << '\n'; // Maximum
+        cout << RPIData::get_freq(0) << '\n'; //! Current frequency
+        cout << RPIData::get_freq(1) << '\n'; //! Minimum frequency
+        cout << RPIData::get_freq(2) << '\n'; //! Maximum frequency
     }
+
+    cout << RPIData::get_gov() << '\n';
+    cout << RPIData::get_distro() << '\n';
 
     return 0;
 }

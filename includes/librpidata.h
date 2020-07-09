@@ -41,6 +41,14 @@ namespace RPIData
     //! \return
     //!
     std::string get_freq(unsigned char);
+
+    //!
+    //! \brief get_gov
+    //! \return
+    //!
+    std::string get_gov();
+
+    std::string get_distro();
 }
 
 #endif // LIBRPIDATA_H
