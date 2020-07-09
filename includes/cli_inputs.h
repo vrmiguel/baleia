@@ -29,10 +29,10 @@
 typedef unsigned char u8;
 
 struct config_s {
-    bool save_temp; //! Saves the SoC's temperature as measured by the on-board temperature sensor. (Celsius)
-    bool save_freq; //! Saves the CPU's current frequency. (MHz)
-    // bool save_load;
-    bool save_gov;  //! Saves the CPU's freq. scaling governor.
+    bool save_cpu_info;      //! Saves the SoC's temperature as measured by the on-board temperature sensor. (Celsius)
+    bool save_user_info;     //! Saves the CPU's current frequency. (MHz)
+    bool toml_format;        //! Saves data in a TOML-friendly format.
+    bool save_version;       //! Saves the CPU's freq. scaling governor.
 };
 typedef struct config_s config_t;
 

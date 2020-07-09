@@ -28,30 +28,51 @@
 #include <cstdlib>                  // exit
 #include <cstring>                  // strcmp
 
-#define __RPIM_USAGE "Usage: ./rpimonitor [-h, --help] [-f, --freq] [-t, --temp] [-g, --gov]\n"
+#define __RPIM_USAGE "Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-n, --no-info] [-a, --all] [--cfg] \n"
 
+static inline void print_help()
+{
+    printf(__RPIM_USAGE);
+    printf("%-15s\tShow this text and exit.\n", "-h, --help");
+    printf("%-15s\tSaves cur., max., and min. CPU frequency, temperature and scaling governor.\n", "-c, --cpu");
+    printf("%-15s\tSave user and OS data.\n", "-u, --user");
+    printf("%-15s\tSave all possible data.\n", "-a, --all");
+    printf("%-15s\tDon't save program version.\n", "-n, --no-info");
+    printf("%-15s\tSaves in a TOML-friendly key-vaue format.\n", "--cfg");
+}
 
 config_t parse_cli_input(int argc, char ** argv)
 {
     if (argc == 1)
     {
-        return { true, true, true };    //! Save all info. by default
+        return { true, true, false, true };    //! Save all info. by default
     }
-    config_t cfg;
+    config_t cfg {false, false, false, true};
 
     for (u8 i = 1; i < argc; i++)
     {
-        if (!strcmp(argv[i], "-f") || !strcmp(argv[i], "--freq"))
+        if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--all"))
         {
-            cfg.save_freq = true;
+            cfg.save_cpu_info  = true;
+            cfg.save_user_info = true;
+            cfg.save_version   = true;
         }
-        else if (!strcmp(argv[i], "-t") || !strcmp(argv[i], "--temp"))
+        else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--cpu"))
         {
-            cfg.save_temp = true;
+            cfg.save_cpu_info = true;
         }
-        else if (!strcmp(argv[i], "-g") || !strcmp(argv[i], "--gov"))
+        else if (!strcmp(argv[i], "-u") || !strcmp(argv[i], "--user"))
         {
-            cfg.save_gov = true;
+            cfg.save_user_info = true;
+        }
+        else if (!strcmp(argv[i], "--cfg"))
+        {
+            cfg.toml_format = true;
+        }
+        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
+        {
+            print_help();
+            exit(0);
         }
         else {
             fprintf(stderr, "rpimonitor: unknown option %s.\n", argv[i]);

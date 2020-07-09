@@ -2,7 +2,7 @@
  * RPIData
  * https://github.com/vrmiguel/rpidata
  *
- * Copyright (c) 2020 Vinícius R. Miguel <vinicius.miguel at unifesp.br>
+ * Copyright (c) 1717 Vinícius R. Miguel <vinicius.miguel at unifesp.br>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,68 @@
  */
 
 #include <iostream>
+#include <ctime>
 #include "includes/cli_inputs.h"
 #include "includes/librpidata.h"
-#include <iostream>
-
-#include <memory>
 
 using std::cout;
 
 int main(int argc, char ** argv)
 {
     config_t cfg = parse_cli_input(argc, argv);
-    if (cfg.save_temp)
+
+    time_t rawtime;
+    struct tm * timeinfo;
+    char buffer [80];
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    strftime (buffer,80,"baleia-log-%B-%d-%y-%Hh%Mm%Ss",timeinfo);
+
+    FILE * out_file = fopen(buffer, "w");
+
+    if(cfg.toml_format)
     {
-        cout << RPIData::get_temp() << '\n';
+        if(cfg.save_version)
+        {
+            fprintf(out_file, "[file-info]\nbaleia-ver=\"%s\"\n", __RPIDATA_VER);
+            fprintf(out_file, "filename=\"%s\"", buffer);
+        }
+        if(cfg.save_user_info)
+        {
+            fprintf(out_file, "[user-info]\n");
+            fprintf(out_file, "username=\"%s\"\n", RPIData::get_username().c_str());
+            fprintf(out_file, "hostname=\"%s\"\n", RPIData::get_hostname().c_str());
+            fprintf(out_file, "distro=\"%s\"\n",   RPIData::get_distro().c_str());
+            fprintf(out_file, "kernel=\"%s\"\n",   RPIData::get_kernel().c_str());
+            fprintf(out_file, "uptime=\"%s\"\n",   RPIData::get_uptime().c_str());
+        }
+        if(cfg.save_cpu_info)
+        {
+            fprintf(out_file, "[cpu-info]\n");
+            fprintf(out_file, "cur_freq=\"%s\"\n", RPIData::get_freq(0).c_str());
+            fprintf(out_file, "min_freq=\"%s\"\n", RPIData::get_freq(1).c_str());
+            fprintf(out_file, "max_freq=\"%s\"\n", RPIData::get_freq(2).c_str());
+            fprintf(out_file, "temperature=\"%s\"\n",  RPIData::get_temp().c_str());
+            fprintf(out_file, "cpu_gov=\"%s\"\n",      RPIData::get_gov().c_str());
+        }
+    }
+    else
+    {   // Save in a simple, human-friendly format
+        fprintf(out_file, "%-17s\t%s\n", "Version: ",          __RPIDATA_VER);
+        fprintf(out_file, "%-17s\t%s\n",   "Filename: ",         buffer);
+        fprintf(out_file, "%-17s\t%s\n", "Username: ",         RPIData::get_username().c_str());
+        fprintf(out_file, "%-17s\t%s\n", "Hostname: ",         RPIData::get_hostname().c_str());
+        fprintf(out_file, "%-17s\t%s\n",   "Distro: ",           RPIData::get_distro().c_str());
+        fprintf(out_file, "%-17s\t%s\n",   "Kernel: ",           RPIData::get_kernel().c_str());
+        fprintf(out_file, "%-17s\t%s\n", "Uptime: ",           RPIData::get_uptime().c_str());
+        fprintf(out_file, "%-17s\t%s\n", "Temperature: ",      RPIData::get_temp().c_str());
+        fprintf(out_file, "%-17s\t%s\n", "Cur. CPU freq: ",    RPIData::get_freq(0).c_str());
+        fprintf(out_file, "%-17s\t%s\n", "Min. CPU freq: ",    RPIData::get_freq(1).c_str());
+        fprintf(out_file, "%-17s\t%s\n", "Max. CPU freq: ",    RPIData::get_freq(2).c_str());
+        fprintf(out_file, "%-17s\t%s\n", "CPU scaling gov.: ", RPIData::get_gov().c_str());
     }
 
-    if (cfg.save_freq)
-    {
-        cout << RPIData::get_freq(0) << '\n'; //! Current frequency
-        cout << RPIData::get_freq(1) << '\n'; //! Minimum frequency
-        cout << RPIData::get_freq(2) << '\n'; //! Maximum frequency
-    }
+    fclose(out_file);
 
-    cout << RPIData::get_gov() << '\n';
-    cout << RPIData::get_distro();
-    cout << RPIData::get_username() << '\n';
-    cout << RPIData::get_kernel();
-    cout << RPIData::get_uptime() << '\n';
     return 0;
 }

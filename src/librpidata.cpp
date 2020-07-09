@@ -35,9 +35,9 @@ using std::ifstream;
 static void string_replace( string &s, const string &search, const string &replace ) {
     for( size_t pos = 0; ; pos += replace.length() ) {
         pos = s.find(search, pos);
-        if( pos == string::npos ) break;
-        s.erase( pos, search.length() );
-        s.insert( pos, replace );
+        if(pos == string::npos) break;
+        s.erase(pos, search.length());
+        s.insert(pos, replace);
     }
 }
 
@@ -69,7 +69,7 @@ std::string RPIData::get_temp()
     in >> heat;
     char buff[20];
     snprintf(buff, sizeof(buff), "%.2f °C", (float) heat/1000);
-    return std::string(buff);
+    return buff;
 }
 
 std::string RPIData::get_freq(unsigned char type)
@@ -114,7 +114,7 @@ std::string RPIData::get_gov()
 
 std::string RPIData::get_distro()
 {
-    std::string res = shell_cmd("cat /etc/os-release | grep PRETTY_NAME=");
+    std::string res = shell_cmd("cat /etc/os-release | grep PRETTY_NAME= | tr -d \"\n\"");
     //res = std::regex_replace(res, std::regex("PRETTY_NAME="), "");
     //res = std::regex_replace(res, std::regex("\""), "");
     string_replace(res, "PRETTY_NAME=", "");
@@ -124,18 +124,19 @@ std::string RPIData::get_distro()
 
 std::string RPIData::get_kernel()
 {
-    return shell_cmd("uname -mrs");
+    return shell_cmd("uname -mrs | tr -d \"\n\"");
 }
 
 std::string RPIData::get_username()
 {
 
-    uid_t uid = geteuid();             // Gets the effective ID of the user that started miniSHELL
+    // Gets the effective ID of the user
+    uid_t uid = geteuid();
     struct passwd pwent;
     struct passwd *pwent_ptr;
     char buffer[1024];
 
-        // Looks for the UDI on the password databank and saves the result on pwent
+    // Looks for the UID on the password databank and saves the result on pwent
     getpwuid_r(uid, &pwent, buffer, sizeof buffer, &pwent_ptr);
     return pwent.pw_name;   // Saves username
 }

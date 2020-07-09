@@ -28,6 +28,8 @@
 
 #include <string>
 
+#define __RPIDATA_VER "baleia v.0.1-alpha"
+
 namespace RPIData
 {
     //!
