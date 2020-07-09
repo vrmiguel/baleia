@@ -48,7 +48,9 @@ int main(int argc, char ** argv)
     }
 
     cout << RPIData::get_gov() << '\n';
-    cout << RPIData::get_distro() << '\n';
+    cout << RPIData::get_distro();
     cout << RPIData::get_username() << '\n';
+    cout << RPIData::get_kernel();
+    cout << RPIData::get_uptime() << '\n';
     return 0;
 }

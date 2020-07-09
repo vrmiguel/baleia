@@ -122,6 +122,11 @@ std::string RPIData::get_distro()
     return res;
 }
 
+std::string RPIData::get_kernel()
+{
+    return shell_cmd("uname -mrs");
+}
+
 std::string RPIData::get_username()
 {
 
@@ -135,4 +140,55 @@ std::string RPIData::get_username()
     return pwent.pw_name;   // Saves username
 }
 
+std::string RPIData::get_hostname()
+{
+    char hostname_buffer[64];
+    gethostname(hostname_buffer, 64);
+    return hostname_buffer;
+}
 
+std::string RPIData::get_uptime()
+{
+    ifstream in;
+    in.open("/proc/uptime");
+    unsigned long int proc_uptime;
+    in >> proc_uptime;
+    int years   =  proc_uptime / 60 / 60 / 24   / 365;
+    int days    = (proc_uptime / 60 / 60 / 24) % 365;
+    int hours   = (proc_uptime / 3600) % 24;
+    int minutes = (proc_uptime / 60) % 60;
+    int seconds = proc_uptime  % 60;
+
+    std::string result;
+    if (years)
+    {
+        result += std::to_string(years);
+        result += years > 1 ? " years " : " year ";
+    }
+
+    if (days)
+    {
+        result += std::to_string(days);
+        result += days > 1 ? " days " : " day ";
+    }
+
+    if (hours)
+    {
+        result += std::to_string(hours);
+        result += hours > 1 ? " hours " : " hour ";
+    }
+
+    if (minutes)
+    {
+        result += std::to_string(minutes);
+        result += minutes > 1 ? " minutes " : " minute ";
+    }
+
+    if (seconds)
+    {
+        result += std::to_string(seconds);
+        result += seconds > 1 ? " seconds" : " second";
+    }
+
+    return result;
+}
