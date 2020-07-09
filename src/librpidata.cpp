@@ -27,10 +27,19 @@
 #include <fstream>
 //#include <cstdio>
 #include <memory>   // unique_ptr
-#include <regex>    // std::regex, regex::replace
+//#include <regex>    // std::regex, regex::replace
 
 using std::string;
 using std::ifstream;
+
+static void string_replace( string &s, const string &search, const string &replace ) {
+    for( size_t pos = 0; ; pos += replace.length() ) {
+        pos = s.find(search, pos);
+        if( pos == string::npos ) break;
+        s.erase( pos, search.length() );
+        s.insert( pos, replace );
+    }
+}
 
 static std::string shell_cmd(const char * cmd) {
     char buffer[128];
@@ -106,7 +115,9 @@ std::string RPIData::get_gov()
 std::string RPIData::get_distro()
 {
     std::string res = shell_cmd("cat /etc/os-release | grep PRETTY_NAME=");
-    res = std::regex_replace(res, std::regex("PRETTY_NAME="), "");
-    res = std::regex_replace(res, std::regex("\""), "");
+    //res = std::regex_replace(res, std::regex("PRETTY_NAME="), "");
+    //res = std::regex_replace(res, std::regex("\""), "");
+    string_replace(res, "PRETTY_NAME=", "");
+    string_replace(res, "\"", "");
     return res;
 }
