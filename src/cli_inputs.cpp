@@ -28,7 +28,7 @@
 #include <cstdlib>                  // exit
 #include <cstring>                  // strcmp
 
-#define __RPIM_USAGE "Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]\n"
+#define __RPIM_USAGE "Usage: ./baleia [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]\n"
 
 // TODO: remove -n, --no
 
@@ -96,7 +96,7 @@ config_t parse_cli_input(int argc, char ** argv)
             exit(0);
         }
         else {
-            fprintf(stderr, "rpimonitor: unknown option %s.\n", argv[i]);
+            fprintf(stderr, "error: unknown option %s.\n", argv[i]);
             fprintf(stderr, __RPIM_USAGE);
             exit(0);
         }

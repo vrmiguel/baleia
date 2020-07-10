@@ -74,4 +74,6 @@ Core voltage:    	1.2000V
 
 Build with `qmake && make` or download a binary from the [releases](https://github.com/vrmiguel/baleia/releases/) page.
 
+### Internals
 
+If you wish to use this programmatically, you can use the `librpidata.cpp/.h` files, which provide a RPIData namespace with the methods you'd want to use.
