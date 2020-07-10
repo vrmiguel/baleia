@@ -28,7 +28,7 @@
 #include <cstdlib>                  // exit
 #include <cstring>                  // strcmp
 
-#define __RPIM_USAGE "Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-n, --no-info] [-a, --all] [--cfg] \n"
+#define __RPIM_USAGE "Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-n, --no-info] \n\t\t[-a, --all] [--cfg] [-f, --fmt <format-string>]\n"
 
 static inline void print_help()
 {
@@ -45,9 +45,9 @@ config_t parse_cli_input(int argc, char ** argv)
 {
     if (argc == 1)
     {
-        return { true, true, false, true };    //! Save all info. by default
+        return { true, true, false, true, "baleia-log-%B-%d-%y-%Hh%Mm%Ss" };    //! Save all info. by default
     }
-    config_t cfg {false, false, false, true};
+    config_t cfg {false, false, false, true, "baleia-log-%B-%d-%y-%Hh%Mm%Ss"};
 
     for (u8 i = 1; i < argc; i++)
     {
@@ -60,6 +60,15 @@ config_t parse_cli_input(int argc, char ** argv)
         else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--cpu"))
         {
             cfg.save_cpu_info = true;
+        }
+        else if (!strcmp(argv[i], "-f") || !strcmp(argv[i], "--fmt"))
+        {
+            if (i + 1 >= argc)
+            {
+                fprintf(stderr, "missing value to --fmt");
+                exit(0);
+            }
+            cfg.format_string = argv[++i];
         }
         else if (!strcmp(argv[i], "-u") || !strcmp(argv[i], "--user"))
         {

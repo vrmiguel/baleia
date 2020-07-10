@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
     char buffer [80];
     time (&rawtime);
     timeinfo = localtime (&rawtime);
-    strftime (buffer,80,"baleia-log-%B-%d-%y-%Hh%Mm%Ss",timeinfo);
+    strftime (buffer, 80, cfg.format_string, timeinfo);
 
     FILE * out_file = fopen(buffer, "w");
 

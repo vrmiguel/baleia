@@ -33,6 +33,7 @@ struct config_s {
     bool save_user_info;     //! Saves the CPU's current frequency. (MHz)
     bool toml_format;        //! Saves data in a TOML-friendly format.
     bool save_version;       //! Saves the CPU's freq. scaling governor.
+    const char * format_string;
 };
 typedef struct config_s config_t;
 
