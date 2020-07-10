@@ -4,9 +4,9 @@
 
 Baleia is a pure C++11 command-line tool to retrieve data about your Raspberry Pi. Although made to target the RPi, it should run (although lacking `vcgencmd`-originated data) on any system running GNU/Linux.
 
-### Usage
+## Usage
 
-```
+```terminal
 Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]
 -h, --help       	Show this message and exit.
 -c, --cpu        	Save CPU frequency, temperature and scaling governor.
@@ -17,14 +17,15 @@ Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg]
 -f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
 ```
 
-#### Output formats
+### Output formats
 
-###### .ini-style format
+#### .ini-style format
 
 Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/toml) or [rxi/ini](https://github.com/rxi/ini). This format is used when the `--cfg` option is used.
 
 An example follows:
-```
+
+```shell
 ./baleia -a --cfg
 [file-info]
 baleia-ver="baleia v.0.1-alpha"
@@ -47,11 +48,11 @@ core_volt="1.2000V"
 
 ```
 
-###### Simple, readability-first, output
+#### Simple, readability-first, output
 
 An example in this format follows:
 
-```
+```shell
 Version:         	baleia v.0.1-alpha
 Filename:        	baleia-log-July-10-20-01h46m53s
 Username:        	pi
