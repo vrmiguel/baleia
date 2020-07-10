@@ -18,7 +18,7 @@ Usage: ./baleia [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f
 ```
 
 The `-f, --fmt` option requires a string that conforms to the [strftime](https://man7.org/linux/man-pages/man3/strftime.3.html) specification. If this flag is not 
-used, the default `""baleia-log-%B-%d-%y-%Hh%Mm%Ss"` will yields filenames such as `baleia-log-July-10-20-02h31m56s`.
+used, the default `""baleia-log-%B-%d-%y-%Hh%Mm%Ss"` will be used, which yields filenames such as `baleia-log-July-10-20-12h31m56s`.
 
 ### Output formats
 
