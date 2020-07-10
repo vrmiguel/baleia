@@ -1,4 +1,6 @@
-# baleia
+# baleia [![CodeFactor](https://www.codefactor.io/repository/github/vrmiguel/baleia/badge)](https://www.codefactor.io/repository/github/vrmiguel/baleia) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/091b600655654901a95a9d8f7769ff86)](https://www.codacy.com/manual/lemao.vrm07/baleia?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=vrmiguel/baleia&amp;utm_campaign=Badge_Grade) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+*⚠️ Early work in progress.*
 
 Baleia is a pure C++11 command-line tool to retrieve data about your Raspberry Pi. Although made to target the RPi, it should run (although lacking `vcgencmd`-originated data) on any system running GNU/Linux.
 
