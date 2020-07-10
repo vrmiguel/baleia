@@ -7,15 +7,18 @@ Baleia is a pure C++11 command-line tool to retrieve data about your Raspberry P
 ## Usage
 
 ```shell
-Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]
+Usage: ./baleia [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]
 -h, --help       	Show this message and exit.
 -c, --cpu        	Save CPU frequency, temperature and scaling governor.
 -u, --user       	Save user and OS data.
--a, --all        	Save all possible data. Set by when no options are supplied.
+-a, --all        	Save all possible data. Set when no options are supplied.
 -d, --discard    	Print to stdout without saving to a file.
 --cfg            	Saves in a TOML-friendly config. file-like format.
 -f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
 ```
+
+The `-f, --fmt` option requires a string that conforms to the [strftime](https://man7.org/linux/man-pages/man3/strftime.3.html) specification. If this flag is not 
+used, the default `""baleia-log-%B-%d-%y-%Hh%Mm%Ss"` will be used, which yields filenames such as `baleia-log-July-10-20-12h31m56s`.
 
 ### Output formats
 
