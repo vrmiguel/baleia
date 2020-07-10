@@ -55,6 +55,8 @@ namespace RPIData
     std::string get_hostname();
     std::string get_kernel();
     std::string get_uptime();
+    std::string get_mem(bool);  // true: get memory available for the CPU; false: get memory available to the GPU
+    std::string get_core_voltage();
 }
 
 #endif // LIBRPIDATA_H

@@ -32,6 +32,8 @@
 using std::string;
 using std::ifstream;
 
+#include <iostream> // used for debug, remember to remove
+
 static void string_replace( string &s, const string &search, const string &replace ) {
     for( size_t pos = 0; ; pos += replace.length() ) {
         pos = s.find(search, pos);
@@ -68,7 +70,7 @@ std::string RPIData::get_temp()
     float heat;
     in >> heat;
     char buff[20];
-    snprintf(buff, sizeof(buff), "%.2f °C", (float) heat/1000);
+    snprintf(buff, sizeof(buff), "%.2f °C", heat/1000);
     return buff;
 }
 
@@ -114,17 +116,20 @@ std::string RPIData::get_gov()
 
 std::string RPIData::get_distro()
 {
-    std::string res = shell_cmd("cat /etc/os-release | grep PRETTY_NAME= | tr -d \"\n\"");
+    std::string res = shell_cmd("cat /etc/os-release | grep PRETTY_NAME=");
     //res = std::regex_replace(res, std::regex("PRETTY_NAME="), "");
     //res = std::regex_replace(res, std::regex("\""), "");
     string_replace(res, "PRETTY_NAME=", "");
     string_replace(res, "\"", "");
+    string_replace(res, "\n", "");
     return res;
 }
 
 std::string RPIData::get_kernel()
 {
-    return shell_cmd("uname -mrs | tr -d \"\n\"");
+    std::string res = shell_cmd("uname -mrs");
+    string_replace(res, "\n", "");
+    return res;
 }
 
 std::string RPIData::get_username()
@@ -192,4 +197,34 @@ std::string RPIData::get_uptime()
     }
 
     return result;
+}
+
+// true: get memory available for the CPU; false: get memory available to the GPU
+std::string RPIData::get_mem(bool choice)
+{
+    std::string res;
+    if(choice)
+    {
+        res = shell_cmd("/opt/vc/bin/vcgencmd get_mem arm");
+        if (res.empty()) return res = "vcgencmd unavailable";
+        string_replace(res, "arm=", "");
+        string_replace(res, "\n", "");
+    }
+    else
+    {
+        res = shell_cmd("/opt/vc/bin/vcgencmd get_mem gpu");
+        if (res.empty()) return res = "vcgencmd unavailable";
+        string_replace(res, "gpu=", "");
+        string_replace(res, "\n", "");
+    }
+    return res += "B";
+}
+
+std::string RPIData::get_core_voltage()
+{
+    std::string res = shell_cmd("/opt/vc/bin/vcgencmd measure_volts core");
+    if (res.empty()) return res = "vcgencmd unavailable";
+    string_replace(res, "volt=", "");
+    string_replace(res, "\n", "");
+    return res;
 }
