@@ -6,14 +6,14 @@ Baleia is a pure C++11 command-line tool to retrieve data about your Raspberry P
 
 ## Usage
 
-```terminal
+```shell
 Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]
 -h, --help       	Show this message and exit.
 -c, --cpu        	Save CPU frequency, temperature and scaling governor.
 -u, --user       	Save user and OS data.
 -a, --all        	Save all possible data. Set by when no options are supplied.
 -d, --discard    	Print to stdout without saving to a file.
---cfg            	Saves in a TOML-friendly key-value format.
+--cfg            	Saves in a TOML-friendly config. file-like format.
 -f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
 ```
 
@@ -21,7 +21,7 @@ Usage: ./rpimonitor [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg]
 
 #### .ini-style format
 
-Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/toml) or [rxi/ini](https://github.com/rxi/ini). This format is used when the `--cfg` option is used.
+Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/toml) or [rxi/ini](https://github.com/rxi/ini). This format is used when the `--cfg` flag is set.
 
 An example follows:
 
@@ -29,13 +29,13 @@ An example follows:
 ./baleia -a --cfg
 [file-info]
 baleia-ver="baleia v.0.1-alpha"
-filename="baleia-log-July-10-20-01h50m39s"
+filename="baleia-log-July-10-20-13h36m15s"
 [user-info]
 username="pi"
 hostname="raspberrypi"
 distro="Raspbian GNU/Linux 10 (buster)"
 kernel="Linux 4.19.118-v7+ armv7l"
-uptime="55 minutes 32 seconds"
+uptime="8 hours 18 minutes 52 seconds"
 [cpu-info]
 cur_freq="600 MHz"
 min_freq="600 MHz"
@@ -72,7 +72,7 @@ Core voltage:    	1.2000V
 
 ### Build
 
-Build with `qmake && make` or download a binary from the [releases](https://github.com/vrmiguel/baleia/releases/) page.
+Build with `qmake && make` inside the project's root folder or download a binary from the [releases](https://github.com/vrmiguel/baleia/releases/) page.
 
 ### Internals
 
