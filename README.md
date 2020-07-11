@@ -7,13 +7,15 @@ Baleia is a pure C++11 command-line tool to retrieve data about your Raspberry P
 ## Usage
 
 ```shell
-Usage: ./baleia [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]
--h, --help       	Show this message and exit.
--c, --cpu        	Save CPU frequency, temperature and scaling governor.
--u, --user       	Save user and OS data.
--a, --all        	Save all possible data. Set when no options are supplied.
--d, --discard    	Print to stdout without saving to a file.
---cfg            	Saves in a TOML-friendly config. file-like format.
+Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [-f, --fmt <format-string>]
+
+-h, --help      	Show this message and exit.
+-c, --cpu       	Save CPU frequency, temperature and scaling governor.
+-u, --user      	Save user and OS data.
+-F, --file-info 	Save filename and Baleia version.
+-a, --all       	Save all available data.
+-d, --discard   	Print to stdout without saving to a file.
+-C, --cfg       	Saves in a TOML-friendly key-value format.
 -f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
 ```
 

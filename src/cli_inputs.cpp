@@ -28,20 +28,19 @@
 #include <cstdlib>                  // exit
 #include <cstring>                  // strcmp
 
-#define __RPIM_USAGE "Usage: ./baleia [-c, --cpu] [-u, --user] [-a, --all] [-d, --discard] [--cfg] [-f, --fmt <format-string>]\n"
-
-// TODO: remove -n, --no
+#define __RPIM_USAGE "Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [-f, --fmt <format-string>]\n\n"
 
 static inline void print_help()
 {
     printf(__RPIM_USAGE);
-    printf("%-17s\tShow this message and exit.\n", "-h, --help");
-    printf("%-17s\tSave CPU frequency, temperature and scaling governor.\n", "-c, --cpu");
-    printf("%-17s\tSave user and OS data.\n", "-u, --user");
-    printf("%-17s\tSave all possible data. Set by default.\n", "-a, --all");
-    printf("%-17s\tPrint to stdout without saving to a file.\n", "-d, --discard");
-    printf("%-17s\tSaves in a TOML-friendly key-value format.\n", "--cfg");
-    printf("%-17s\tSaves output according to the given string, following `strftime` format specification.\n", "-f, --fmt <fmt-str>");
+    printf("%-16s\tShow this message and exit.\n", "-h, --help");
+    printf("%-16s\tSave CPU frequency, temperature and scaling governor.\n", "-c, --cpu");
+    printf("%-16s\tSave user and OS data.\n", "-u, --user");
+    printf("%-16s\tSave filename and Baleia version.\n", "-F, --file-info");
+    printf("%-16s\tSave all available data.\n", "-a, --all");
+    printf("%-16s\tPrint to stdout without saving to a file.\n", "-d, --discard");
+    printf("%-16s\tSaves in a TOML-friendly key-value format.\n", "-C, --cfg");
+    printf("%-16s\tSaves output according to the given string, following `strftime` format specification.\n", "-f, --fmt <fmt-str>");
 }
 
 config_t parse_cli_input(int argc, char ** argv)
@@ -50,7 +49,7 @@ config_t parse_cli_input(int argc, char ** argv)
     {
         return { true, true, false, true, true, "baleia-log-%B-%d-%y-%Hh%Mm%Ss" };    //! Save all info. by default
     }
-    config_t cfg {false, false, false, true, true, "baleia-log-%B-%d-%y-%Hh%Mm%Ss"};
+    config_t cfg {false, false, false, false, true, "baleia-log-%B-%d-%y-%Hh%Mm%Ss"};
 
     for (u8 i = 1; i < argc; i++)
     {
@@ -58,11 +57,15 @@ config_t parse_cli_input(int argc, char ** argv)
         {
             cfg.save_cpu_info  = true;
             cfg.save_user_info = true;
-            cfg.save_version   = true;
+            cfg.save_file_info = true;
         }
         else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--cpu"))
         {
             cfg.save_cpu_info = true;
+        }
+        else if (!strcmp(argv[i], "-F") || !strcmp(argv[i], "--file-info"))
+        {
+            cfg.save_file_info = true;
         }
         else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--discard"))
         {
@@ -86,7 +89,7 @@ config_t parse_cli_input(int argc, char ** argv)
         {
             cfg.save_user_info = true;
         }
-        else if (!strcmp(argv[i], "--cfg"))
+        else if (!strcmp(argv[i], "-C") || !strcmp(argv[i], "--cfg"))
         {
             cfg.toml_format = true;
         }

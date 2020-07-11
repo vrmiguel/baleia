@@ -28,28 +28,13 @@
 
 #include <string>
 
-#define __RPIDATA_VER "baleia v.0.1-alpha"
+#define __RPIDATA_VER "baleia v.0.1-beta"
 
 namespace RPIData
 {
-    //!
-    //! \brief get_temp
-    //! \return
-    //!
     std::string get_temp();
-
-    //!
-    //! \brief get_freq
-    //! \return
-    //!
     std::string get_freq(unsigned char);
-
-    //!
-    //! \brief get_gov
-    //! \return
-    //!
     std::string get_gov();
-
     std::string get_distro();
     std::string get_username();
     std::string get_hostname();
@@ -59,4 +44,4 @@ namespace RPIData
     std::string get_core_voltage();
 }
 
-#endif // LIBRPIDATA_H
+#endif // __LIBRPIDATA_H

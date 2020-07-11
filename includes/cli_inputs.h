@@ -32,7 +32,7 @@ struct config_s {
     bool save_cpu_info;      //! Saves the SoC's temperature as measured by the on-board temperature sensor. (Celsius)
     bool save_user_info;     //! Saves the CPU's current frequency. (MHz)
     bool toml_format;        //! Saves data in a TOML-friendly format.
-    bool save_version;       //! Saves the CPU's freq. scaling governor.
+    bool save_file_info;     //! Saves filename and baleia version.
     bool save_output;        //! Save a file following the spec. given by format_string.
     const char * format_string;
 };
