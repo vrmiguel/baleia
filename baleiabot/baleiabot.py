@@ -1,7 +1,7 @@
 # github.com/vrmiguel/baleia
 
 from telegram import ParseMode
-from telegram.ext import Updater, CommandHandler, MessageHandler, ConversationHandler, Filters
+from telegram.ext import Updater, CommandHandler, ConversationHandler, Filters
 import logging
 from subprocess import Popen, PIPE
 try:
@@ -27,9 +27,8 @@ def is_authorized(update):
     return uid in secrets.acceptable_uids
 
 def start(update, context):
-    uid = update.message.from_user.id
     if not is_authorized(update):
-        logging.info(f"{update.message.from_user.id} ({update.message.from_user.username}) is unauthorized.")    
+        logging.info(f"{update.message.from_user.id} ({update.message.from_user.username}) is unauthorized.")
         update.message.reply_text(f'User {update.message.from_user.full_name} is not authorized to access this bot.')
         return
     logging.info(f"in start: user's id: {update.message.from_user.id}")
