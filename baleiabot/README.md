@@ -4,10 +4,10 @@
 
 ## Commands
 
-```
-    * /start    - Starts the bot
-    * /get_log  - Prints out a full Baleia log
-    * /help     - Prints out a small help message
+```shell
+    */start    - Starts the bot
+    */get_log  - Prints out a full Baleia log
+    */help     - Prints out a small help message
 ```
 
 ## Usage
@@ -17,7 +17,6 @@ Dependencies:
   * [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
 
 Requires a `bot_details.py` file with a Secrets class (shown below) and a Baleia binary in the same directory the bot is running on.
-
 
 The `bot_details.py` file should store the following info:
 
