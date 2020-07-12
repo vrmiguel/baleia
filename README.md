@@ -77,8 +77,18 @@ Core voltage:    	1.2000V
 
 ### Build
 
-Build with `qmake && make` inside the project's root folder or download a binary from the [releases](https://github.com/vrmiguel/baleia/releases/) page.
+To build the C++ version:
+
+```shell
+git clone https://github.com/vrmiguel/baleia.git
+cd baleia/baleia
+qmake
+make
+```
+
+Binaries can be found at the [releases](https://github.com/vrmiguel/baleia/releases/) page.
 
 ### Internals
 
-If you wish to use this programmatically, you can use the `librpidata.cpp/.h` files, which provide a RPIData namespace with the methods you'd want to use.
+If you wish to use this programmatically, you can use the `librpidata.cpp/.h` files, which provide a RPIData namespace with the methods you'd want to use, when on C++, or the `rpidata` module when using Go.
+
