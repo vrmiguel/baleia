@@ -1,7 +1,7 @@
 # github.com/vrmiguel/baleia
 
 from telegram import ParseMode
-from telegram.ext import Updater, CommandHandler, Filters
+from telegram.ext import Updater, CommandHandler
 import logging
 from subprocess import Popen, PIPE
 try:

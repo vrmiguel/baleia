@@ -2,16 +2,12 @@
 
 *⚠️ Early work in progress.*
 
-Baleia is a command-line tool (and complimentary Telegram bot) to retrieve data about your Raspberry Pi, with implementations in C++11 or Go. Although made to target the RPi, it should run (although lacking `vcgencmd`-originated data) on any system running GNU/Linux.
-
-## Implementations
-
-Both C++11 and Go source codes should produce the exact same logs, with the main difference being the specification format used by the `-f, --fmt` flag, with very similar performance. The Go binaries in the [releases](https://github.com/vrmiguel/baleia/releases/) page are statically linked so they'll run even if Go is not installed on your destination system.
+Baleia-go is a pure Go (does not use `cgo`) command-line tool to retrieve data about your Raspberry Pi. Although made to target the RPi, it should run (although lacking `vcgencmd`-originated data) on any system running GNU/Linux.
 
 ## Usage
 
 ```shell
-Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [-f, --fmt <format-string>]
+Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [-f, --fmt <format-string>]
 
 -h, --help      	Show this message and exit.
 -c, --cpu       	Save CPU frequency, temperature and scaling governor.
@@ -19,20 +15,23 @@ Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --di
 -F, --file-info 	Save filename and Baleia version.
 -a, --all       	Save all available data.
 -d, --discard   	Print to stdout without saving to a file.
--C, --cfg       	Saves in a TOML-friendly key-value format.
--f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
+-t, --toml      	Saves in the TOML format.
+-f, --fmt <fmt-str>	Saves output according to the given string, following Go's time.Format specification.
 ```
+
+The `-f, --fmt` option requires a string that conforms to the [time.Format](https://golang.org/pkg/time/#Time.Format) specification. If this flag is not 
+used, the default `"baleia-log-%B-%d-%y-%Hh%Mm%Ss"` will be used, which yields filenames such as `baleia-log-July-10-20-12h31m56s`.
 
 ### Output formats
 
-#### .ini-style format
+#### TOML format
 
-Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/toml) or [rxi/ini](https://github.com/rxi/ini). This format is used when the `--cfg` flag is set.
+Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/toml) or [rxi/ini](https://github.com/rxi/ini). This format is used when the `-t, --toml` flag is set.
 
 An example follows:
 
 ```shell
-./baleia -a --cfg
+./baleia -a --toml
 [file-info]
 baleia-ver="baleia v.0.1-alpha"
 filename="baleia-log-July-10-20-13h36m15s"
@@ -78,16 +77,7 @@ Core voltage:    	1.2000V
 
 ### Build
 
-To build the C++ version:
-
-```shell
-git clone https://github.com/vrmiguel/baleia.git
-cd baleia/baleia
-qmake
-make
-```
-
-To build the Go version (through cross-compilation):
+To build through cross-compilation:
 
 ```shell
 git clone https://github.com/vrmiguel/baleia.git
@@ -97,9 +87,12 @@ extern GOARCH=arm
 go build -o baleia-go-arm main.go
 ```
 
-Binaries can be found at the [releases](https://github.com/vrmiguel/baleia/releases/) page.
+You may also set GOARCH to `aarch64` or `arm64` when compiling for RPi 4s.
+
+Binaries can be found at the [releases](https://github.com/vrmiguel/baleia/releases/) page. Go produces statically linked binaries so they'll run on your Pi even if
+it does not have Golang installed.
 
 ### Internals
 
-If you wish to use this programmatically, you can use the `librpidata.cpp/.h` files, which provide a RPIData namespace with the methods you'd want to use, when on C++, or the `rpidata` module when using Go.
+If you wish to use this programmatically, you can use the standalone, pure Go, `rpidata` module.
 

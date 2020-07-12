@@ -13,8 +13,8 @@
 ## Usage
 
 Dependencies:
-  * Python 3.6+
-  * [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
+* Python 3.6+
+* [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot)
 
 Requires a `bot_details.py` file with a Secrets class (shown below) and a Baleia binary in the same directory the bot is running on.
 
