@@ -95,4 +95,3 @@ it does not have Golang installed.
 ### Internals
 
 If you wish to use this programmatically, you can use the standalone, pure Go, `rpidata` module.
-

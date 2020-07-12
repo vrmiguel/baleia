@@ -102,4 +102,3 @@ Binaries can be found at the [releases](https://github.com/vrmiguel/baleia/relea
 ### Internals
 
 If you wish to use this programmatically, you can use the `librpidata.cpp/.h` files, which provide a RPIData namespace with the methods you'd want to use, when on C++, or the `rpidata` module when using Go.
-
