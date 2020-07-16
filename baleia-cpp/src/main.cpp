@@ -32,7 +32,12 @@ using std::cout;
 
 int main(int argc, char ** argv)
 {
-    config_t cfg = parse_cli_input(argc, argv);
+    Config cfg;
+    if (argc == 1)
+        cfg = Config(argc);
+    else {
+        cfg = Config(argc, argv);
+    }
 
     FILE * out_file;
     char buffer[80] = { 0 };

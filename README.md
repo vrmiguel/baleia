@@ -11,7 +11,7 @@ Both C++11 and Go source codes should produce the exact same logs, with the main
 ## Usage
 
 ```shell
-Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [-f, --fmt <format-string>]
+Usage: ./baleia [-c, --cpu] [-f, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [--fmt <format-string>]
 
 -h, --help      	Show this message and exit.
 -c, --cpu       	Save CPU frequency, temperature and scaling governor.
@@ -19,8 +19,8 @@ Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --di
 -F, --file-info 	Save filename and Baleia version.
 -a, --all       	Save all available data.
 -d, --discard   	Print to stdout without saving to a file.
--C, --cfg       	Saves in a TOML-friendly key-value format.
--f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
+-t, --toml      	Saves the output in TOML format.
+--fmt <fmt-str> 	Dictate output's filename following the `strftime` format specification.
 ```
 
 ### Output formats
@@ -32,7 +32,7 @@ Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/t
 An example follows:
 
 ```shell
-./baleia -a --cfg
+./baleia -at
 [file-info]
 baleia-ver="baleia v.0.1-alpha"
 filename="baleia-log-July-10-20-13h36m15s"
@@ -92,8 +92,8 @@ To build the Go version (through cross-compilation):
 ```shell
 git clone https://github.com/vrmiguel/baleia.git
 cd baleia/baleia-go
-extern GOOS=linux
-extern GOARCH=arm
+export GOOS=linux
+export GOARCH=arm
 go build -o baleia-go-arm main.go
 ```
 

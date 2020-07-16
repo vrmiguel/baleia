@@ -31,7 +31,7 @@ import (
 	"strings"
 )
 
-const usage = "Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [-f, --fmt <format-string>]\n\n"
+const usage = "Usage: ./baleia [-c, --cpu] [-f, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [--fmt <format-string>]\n\n"
 const timefmt = "baleia-log-Jan-02-06-15h04m05s"
 
 // CLIArgs stores the passed command-line options
@@ -49,7 +49,7 @@ func printHelp() {
 	fmt.Printf("%-16s\tShow this message and exit.\n", "-h, --help")
 	fmt.Printf("%-16s\tSave CPU frequency, temperature and scaling governor.\n", "-c, --cpu")
 	fmt.Printf("%-16s\tSave user and OS data.\n", "-u, --user")
-	fmt.Printf("%-16s\tSave filename and Baleia version.\n", "-F, --file-info")
+	fmt.Printf("%-16s\tSave filename and Baleia version.\n", "-f, --file-info")
 	fmt.Printf("%-16s\tSave all available data.\n", "-a, --all")
 	fmt.Printf("%-16s\tPrint to stdout without saving to a file.\n", "-d, --discard")
 	fmt.Printf("%-16s\tSaves in a TOML-friendly key-value format.\n", "-t, --toml")
@@ -72,6 +72,8 @@ func parseSingleHyphen(arg string, cfg *CLIArgs) {
 			cfg.SaveUserInfo = true
 		case 'u':
 			cfg.SaveUserInfo = true
+		case 'f':
+			cfg.SaveFileInfo = true
 		case 't':
 			cfg.SaveInTomlFormat = true
 		default:
@@ -107,9 +109,11 @@ func ParseCLIArgs(args []string) CLIArgs {
 				cfg.SaveUserInfo = true
 			} else if arg == "--toml" {
 				cfg.SaveInTomlFormat = true
+			} else if arg == "--file-info" {
+				cfg.SaveFileInfo = true
 			} else if arg == "--fmt" {
 				if i+1 >= len(args) {
-					fmt.Println("missing value to -f, --fmt")
+					fmt.Println("missing value to --fmt")
 					os.Exit(1)
 				}
 				i++

@@ -28,82 +28,130 @@
 #include <cstdlib>                  // exit
 #include <cstring>                  // strcmp
 
-#define __RPIM_USAGE "Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [-f, --fmt <format-string>]\n\n"
-#define __RPIM_DEFAULT_FMT "baleia-log-%B-%d-%y-%Hh%Mm%Ss"
+#define __BALEIA_USAGE "Usage: ./baleia [-c, --cpu] [-f, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [--fmt <format-string>]\n\n"
+
 
 static inline void print_help()
 {
-    printf(__RPIM_USAGE);
+    printf(__BALEIA_USAGE);
     printf("%-16s\tShow this message and exit.\n", "-h, --help");
     printf("%-16s\tSave CPU frequency, temperature and scaling governor.\n", "-c, --cpu");
     printf("%-16s\tSave user and OS data.\n", "-u, --user");
     printf("%-16s\tSave filename and Baleia version.\n", "-F, --file-info");
     printf("%-16s\tSave all available data.\n", "-a, --all");
     printf("%-16s\tPrint to stdout without saving to a file.\n", "-d, --discard");
-    printf("%-16s\tSaves in a TOML-friendly key-value format.\n", "-t, --toml");
-    printf("%-16s\tSaves output according to the given string, following `strftime` format specification.\n", "-f, --fmt <fmt-str>");
+    printf("%-16s\tSaves the output in TOML format.\n", "-t, --toml");
+    printf("%-16s\tDictate output's filename following the `strftime` format specification.\n", "--fmt <fmt-str>");
 }
 
-config_t parse_cli_input(int argc, char ** argv)
+void Config::parse_single_hyphen(const char *arg)
 {
-    if (argc == 1)
+    for(u8 i = 1; arg[i] != '\0'; i++)
     {
-        return { true, true, false, true, true, __RPIM_DEFAULT_FMT};    //! Save all info. by default
+        switch (arg[i])
+        {
+        case 'h':
+            print_help();
+            exit(0);
+            break;
+        case 'd':
+            this->save_output = false;
+            break;
+        case 'c':
+            this->save_cpu_info = true;
+            break;
+        case 'a':
+            this->save_cpu_info  = true;
+            this->save_user_info = true;
+            this->save_file_info = true;
+            break;
+        case 'u':
+            this->save_user_info = true;
+            break;
+        case 't':
+            this->toml_format = true;
+            break;
+        case 'f':
+            this->save_file_info = true;
+            break;
+        default:
+            fprintf(stderr, "error: unknown option -%c\n", arg[i]);
+            exit(0);
+        }
     }
-    config_t cfg {false, false, false, false, true, __RPIM_DEFAULT_FMT};
+}
+
+Config::Config(int argc, char ** argv)
+{
+    this->format_string = __BALEIA_DEFAULT_FMT;
+    this->save_cpu_info = false;
+    this->save_file_info = false;
+    this->save_user_info = false;
+    this->save_output = true;
+    this->toml_format = false;
 
     for (u8 i = 1; i < argc; i++)
     {
-        if (!strcmp(argv[i], "-a") || !strcmp(argv[i], "--all"))
+        if (strstr(argv[i], "--"))
         {
-            cfg.save_cpu_info  = true;
-            cfg.save_user_info = true;
-            cfg.save_file_info = true;
-        }
-        else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--cpu"))
-        {
-            cfg.save_cpu_info = true;
-        }
-        else if (!strcmp(argv[i], "-F") || !strcmp(argv[i], "--file-info"))
-        {
-            cfg.save_file_info = true;
-        }
-        else if (!strcmp(argv[i], "-d") || !strcmp(argv[i], "--discard"))
-        {
-            cfg.save_output = false;
-        }
-        else if (!strcmp(argv[i], "-f") || !strcmp(argv[i], "--fmt"))
-        {
-            if (i + 1 >= argc)
+            if (!strcmp(argv[i], "--all"))
             {
-                fprintf(stderr, "error: missing value to --fmt");
+                this->save_cpu_info  = true;
+                this->save_user_info = true;
+                this->save_file_info = true;
+            }
+            else if (!strcmp(argv[i], "--cpu"))
+            {
+                this->save_cpu_info = true;
+            }
+            else if (!strcmp(argv[i], "--file-info"))
+            {
+                this->save_file_info = true;
+            }
+            else if (!strcmp(argv[i], "--discard"))
+            {
+                this->save_output = false;
+            }
+            else if (!strcmp(argv[i], "--fmt"))
+            {
+                if (i + 1 >= argc)
+                {
+                    fprintf(stderr, "error: missing value to --fmt");
+                    exit(0);
+                }
+                if (strlen(argv[i+1]) > 70)
+                {
+                    fprintf(stderr, "error: the resulting format string must not exceed 80 characters.\n");
+                    exit(0);
+                }
+                this->format_string = argv[++i];
+            }
+            else if (!strcmp(argv[i], "--user"))
+            {
+                this->save_user_info = true;
+            }
+            else if (!strcmp(argv[i], "--toml"))
+            {
+                this->toml_format = true;
+            }
+            else if (!strcmp(argv[i], "--help"))
+            {
+                print_help();
                 exit(0);
             }
-            if (strlen(argv[i+1]) > 70)
-            {
-                fprintf(stderr, "error: the resulting format string must not exceed 80 characters.\n");
+            else {
+                fprintf(stderr, "error: unknown option %s.\n", argv[i]);
+                fprintf(stderr, __BALEIA_USAGE);
                 exit(0);
             }
-            cfg.format_string = argv[++i];
-        }
-        else if (!strcmp(argv[i], "-u") || !strcmp(argv[i], "--user"))
-        {
-            cfg.save_user_info = true;
-        }
-        else if (!strcmp(argv[i], "-t") || !strcmp(argv[i], "--toml"))
-        {
-            cfg.toml_format = true;
-        }
-        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
-        {
-            print_help();
-            exit(0);
-        }
-        else {
-            fprintf(stderr, "error: unknown option %s.\n", argv[i]);
-            fprintf(stderr, __RPIM_USAGE);
-            exit(0);
+        } else {
+            if (argv[i][0] == '-')
+            {
+                parse_single_hyphen(argv[i]);
+            } else {
+                fprintf(stderr, "error: '%s' is not a valid option.\n", argv[i]);
+                exit(0);
+            }
         }
     }
-    return cfg;
 }

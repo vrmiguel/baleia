@@ -7,7 +7,7 @@ Baleia is a pure C++11 command-line tool to retrieve data about your Raspberry P
 ## Usage
 
 ```shell
-Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [-f, --fmt <format-string>]
+Usage: ./baleia [-c, --cpu] [-f, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-C, --cfg] [--fmt <format-string>]
 
 -h, --help      	Show this message and exit.
 -c, --cpu       	Save CPU frequency, temperature and scaling governor.
@@ -15,8 +15,8 @@ Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --di
 -F, --file-info 	Save filename and Baleia version.
 -a, --all       	Save all available data.
 -d, --discard   	Print to stdout without saving to a file.
--t, --toml       	Saves in a TOML-friendly key-value format.
--f, --fmt <fmt-str>	Saves output according to the given string, following `strftime` format specification.
+-t, --toml      	Saves the output in TOML format.
+--fmt <fmt-str> 	Dictate output's filename following the `strftime` format specification.
 ```
 
 The `-f, --fmt` option requires a string that conforms to the [strftime](https://man7.org/linux/man-pages/man3/strftime.3.html) specification. If this flag is not 
@@ -31,7 +31,7 @@ Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/t
 An example follows:
 
 ```shell
-./baleia -a --toml
+./baleia -at
 [file-info]
 baleia-ver="baleia v.0.1-alpha"
 filename="baleia-log-July-10-20-13h36m15s"

@@ -27,17 +27,20 @@
 #define __CLI_INPUTS_H
 
 typedef unsigned char u8;
+#define __BALEIA_DEFAULT_FMT "baleia-log-%B-%d-%y-%Hh%Mm%Ss"
 
-struct config_s {
+class  Config {
+    void parse_single_hyphen(const char * arg);
+public:
     bool save_cpu_info;      //! Saves the SoC's temperature as measured by the on-board temperature sensor. (Celsius)
     bool save_user_info;     //! Saves the CPU's current frequency. (MHz)
     bool toml_format;        //! Saves data in a TOML-friendly format.
     bool save_file_info;     //! Saves filename and baleia version.
     bool save_output;        //! Save a file following the spec. given by format_string.
     const char * format_string;
+    Config() {}
+    Config(int) : save_cpu_info(true), save_user_info(true), toml_format(false), save_file_info(true), save_output(true), format_string(__BALEIA_DEFAULT_FMT) {}
+    Config(int argc, char ** argv);
 };
-typedef struct config_s config_t;
-
-config_t parse_cli_input(int argc, char ** argv);
 
 #endif // CLI_INPUTS_H

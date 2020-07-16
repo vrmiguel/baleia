@@ -7,16 +7,16 @@ Baleia-go is a pure Go (does not use `cgo`) command-line tool to retrieve data a
 ## Usage
 
 ```shell
-Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [-f, --fmt <format-string>]
+Usage: ./baleia [-c, --cpu] [-f, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [--fmt <format-string>]
 
 -h, --help      	Show this message and exit.
 -c, --cpu       	Save CPU frequency, temperature and scaling governor.
 -u, --user      	Save user and OS data.
--F, --file-info 	Save filename and Baleia version.
+-f, --file-info 	Save filename and Baleia version.
 -a, --all       	Save all available data.
 -d, --discard   	Print to stdout without saving to a file.
--t, --toml      	Saves in the TOML format.
--f, --fmt <fmt-str>	Saves output according to the given string, following Go's time.Format specification.
+-t, --toml      	Saves in a TOML-friendly key-value format.
+--fmt <fmt-str> 	Saves output according to the given string, following Go's time.Format specification.
 ```
 
 The `-f, --fmt` option requires a string that conforms to the [time.Format](https://golang.org/pkg/time/#Time.Format) specification. If this flag is not 
@@ -31,7 +31,7 @@ Easily parsable format, ready for use with [TOML](https://github.com/toml-lang/t
 An example follows:
 
 ```shell
-./baleia -a --toml
+./baleia -at
 [file-info]
 baleia-ver="baleia v.0.1-alpha"
 filename="baleia-log-July-10-20-13h36m15s"
