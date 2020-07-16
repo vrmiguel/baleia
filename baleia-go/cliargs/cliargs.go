@@ -28,6 +28,7 @@ package cliargs
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 const usage = "Usage: ./baleia [-c, --cpu] [-F, --file-info] [-u, --user] [-a, --all] [-d, --discard] [-t, --toml] [-f, --fmt <format-string>]\n\n"
@@ -52,7 +53,32 @@ func printHelp() {
 	fmt.Printf("%-16s\tSave all available data.\n", "-a, --all")
 	fmt.Printf("%-16s\tPrint to stdout without saving to a file.\n", "-d, --discard")
 	fmt.Printf("%-16s\tSaves in a TOML-friendly key-value format.\n", "-t, --toml")
-	fmt.Printf("%-16s\tSaves output according to the given string, following Go's time.Format specification.\n", "-f, --fmt <fmt-str>")
+	fmt.Printf("%-16s\tSaves output according to the given string, following Go's time.Format specification.\n", "--fmt <fmt-str>")
+}
+
+func parseSingleHyphen(arg string, cfg *CLIArgs) {
+	for _, ch := range arg[1:] {
+		switch ch {
+		case 'h':
+			printHelp()
+			os.Exit(0)
+		case 'd':
+			cfg.SaveOutput = false
+		case 'c':
+			cfg.SaveCPUInfo = true
+		case 'a':
+			cfg.SaveCPUInfo = true
+			cfg.SaveFileInfo = true
+			cfg.SaveUserInfo = true
+		case 'u':
+			cfg.SaveUserInfo = true
+		case 't':
+			cfg.SaveInTomlFormat = true
+		default:
+			fmt.Fprintf(os.Stderr, "error: unknown option -%c\n", ch)
+			os.Exit(0)
+		}
+	}
 }
 
 // ParseCLIArgs reads through the given CLI arg. list and builds a CliArgs
@@ -65,32 +91,41 @@ func ParseCLIArgs(args []string) CLIArgs {
 	var cfg = CLIArgs{false, false, false, true, false, timefmt}
 	for i := 1; i < len(args); i++ {
 		arg := args[i]
-		if arg == "-h" || arg == "--help" {
-			printHelp()
-			os.Exit(0)
-		} else if arg == "-d" || arg == "--discard" {
-			cfg.SaveOutput = false
-		} else if arg == "-c" || arg == "--cpu" {
-			cfg.SaveCPUInfo = true
-		} else if arg == "-a" || arg == "--all" {
-			cfg.SaveCPUInfo = true
-			cfg.SaveFileInfo = true
-			cfg.SaveUserInfo = true
-		} else if arg == "-u" || arg == "--user" {
-			cfg.SaveUserInfo = true
-		} else if arg == "-t" || arg == "--toml" {
-			cfg.SaveInTomlFormat = true
-		} else if arg == "-f" || arg == "--fmt" {
-			if i+1 >= len(args) {
-				fmt.Println("missing value to -f, --fmt")
+		if strings.Contains(arg, "--") {
+			if arg == "--help" {
+				printHelp()
+				os.Exit(0)
+			} else if arg == "--discard" {
+				cfg.SaveOutput = false
+			} else if arg == "--cpu" {
+				cfg.SaveCPUInfo = true
+			} else if arg == "--all" {
+				cfg.SaveCPUInfo = true
+				cfg.SaveFileInfo = true
+				cfg.SaveUserInfo = true
+			} else if arg == "--user" {
+				cfg.SaveUserInfo = true
+			} else if arg == "--toml" {
+				cfg.SaveInTomlFormat = true
+			} else if arg == "--fmt" {
+				if i+1 >= len(args) {
+					fmt.Println("missing value to -f, --fmt")
+					os.Exit(1)
+				}
+				i++
+				cfg.TimeFormat = args[i]
+			} else {
+				fmt.Fprintf(os.Stderr, "error: unknown option %s\n", arg)
+				fmt.Println(usage)
 				os.Exit(1)
 			}
-			i++
-			cfg.TimeFormat = args[i]
 		} else {
-			fmt.Printf("error: unknown option %s\n", arg)
-			fmt.Println(usage)
-			os.Exit(1)
+			if arg[0] == '-' {
+				parseSingleHyphen(arg, &cfg)
+			} else {
+				fmt.Fprintf(os.Stderr, "error: '%s' is not a valid option.\n", arg)
+				os.Exit(0)
+			}
 		}
 	}
 	return cfg
