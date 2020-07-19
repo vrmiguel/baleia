@@ -32,11 +32,11 @@ import (
 	"os"
 	"time"
 
-	"./cliargs"
-	"./rpidata"
+	"baleia-go/cliargs"
+	"baleia-go/rpidata"
 )
 
-const version = "baleia-go v0.1-alpha"
+const version = "baleia-go v0.1-beta"
 
 func main() {
 	cfg := cliargs.ParseCLIArgs(os.Args)
@@ -112,6 +112,18 @@ func main() {
 			fmt.Fprintf(buf, "%-18s\t%s\n", "Core voltage: ", rpidata.GetCoreVoltage())
 		}
 	}
+
+	// rootUsage := rpidata.GetDiskUsage("/")
+	// fmt.Printf("root - all: %s\n", rootUsage.All)
+	// fmt.Printf("root - available: %s\n", rootUsage.Available)
+	// fmt.Printf("root - free: %s\n", rootUsage.Free)
+	// fmt.Printf("root - used: %s\n", rootUsage.Used)
+
+	// homeUsage := rpidata.GetDiskUsage("/bin")
+	// fmt.Printf("/home - all: %s\n", homeUsage.All)
+	// fmt.Printf("/home - available: %s\n", homeUsage.Available)
+	// fmt.Printf("/home - free: %s\n", homeUsage.Free)
+	// fmt.Printf("/home - used: %s\n", homeUsage.Used)
 
 	buf.Flush()
 	if cfg.SaveOutput {

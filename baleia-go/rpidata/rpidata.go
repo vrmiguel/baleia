@@ -30,11 +30,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 	"os/user"
 	"strconv"
 	"strings"
+
+	syscall "golang.org/x/sys/unix"
 )
 
 // ExitIfErrored logs the error and exit if err is not nil.
@@ -89,6 +92,57 @@ func GetGovernor() string {
 	_, err = fmt.Fscanf(file, "%s\n", &governor)
 	ExitIfErrored(err)
 	return governor
+}
+
+// DiskUsageData keeps the total, available, free and used memory of adisk
+type DiskUsageData struct {
+	All       string
+	Available string
+	Free      string
+	Used      string
+}
+
+func round(val float64, roundOn float64, places int) (newVal float64) {
+	var round float64
+	pow := math.Pow(10, float64(places))
+	digit := pow * val
+	_, div := math.Modf(digit)
+	if div >= roundOn {
+		round = math.Ceil(digit)
+	} else {
+		round = math.Floor(digit)
+	}
+	newVal = round / pow
+	return
+}
+
+// Formats a quantity of bytes into a human-friendly string
+func formatSize(sizeInBytes float64) string {
+	suffixes := [4]string{"B", "KB", "MB", "GB"}
+	base := math.Log(sizeInBytes) / math.Log(1024)
+	size := round(math.Pow(1024, base-math.Floor(base)), .5, 2)
+	suffix := suffixes[int(math.Floor(base))]
+	return strconv.FormatFloat(size, 'f', -1, 64) + " " + string(suffix)
+}
+
+// GetDiskUsage returns a struct with relevant disk usage data
+func GetDiskUsage(path string) (dud DiskUsageData) {
+	fs := syscall.Statfs_t{}
+	err := syscall.Statfs(path, &fs)
+	if err != nil {
+		ExitIfErrored(err)
+	}
+
+	diskAll := fs.Blocks * uint64(fs.Bsize)
+	diskAvail := fs.Bavail * uint64(fs.Bsize)
+	diskFree := fs.Bfree * uint64(fs.Bsize)
+	diskUsed := diskAll - diskFree
+
+	dud.All = formatSize(float64(diskAll))
+	dud.Available = formatSize(float64(diskAvail))
+	dud.Free = formatSize(float64(diskFree))
+	dud.Used = formatSize(float64(diskUsed))
+	return
 }
 
 // GetDistro returns a the distro currently being used
